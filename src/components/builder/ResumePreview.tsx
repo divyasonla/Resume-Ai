@@ -31,16 +31,40 @@ export default function ResumePreview() {
     }
   };
 
+  const { fontFamily, fontSize, lineHeight } = resumeData.settings;
   return (
-    <div 
+    <div
       className="bg-white text-black shadow-lg resume-shadow w-full max-w-[210mm] min-h-[297mm]"
-      style={{ 
+      style={{
         aspectRatio: '210 / 297',
-        fontSize: '11pt',
-        lineHeight: '1.4',
+        fontFamily: fontFamily || 'IBM Plex Serif',
+        fontSize: fontSize ? fontSize + 'pt' : '11pt',
+        lineHeight: lineHeight ? String(lineHeight) : '1.4',
       }}
     >
-      {renderTemplate()}
+      {renderTemplateWithFontFamily(fontFamily)}
     </div>
   );
+
+  function renderTemplateWithFontFamily(fontFamily: string) {
+    const templateProps = { data: resumeData, fontFamily };
+    switch (resumeData.template) {
+      case 'modern':
+        return <ModernTemplate {...templateProps} />;
+      case 'classic':
+        return <ClassicTemplate {...templateProps} />;
+      case 'minimal':
+        return <MinimalTemplate {...templateProps} />;
+      case 'creative':
+        return <CreativeTemplate {...templateProps} />;
+      case 'ats':
+        return <ATSTemplate {...templateProps} />;
+      case 'simple':
+        return <SimpleTemplate {...templateProps} />;
+      case 'elegant':
+        return <ElegantTemplate {...templateProps} />;
+      default:
+        return <ModernTemplate {...templateProps} />;
+    }
+  }
 }

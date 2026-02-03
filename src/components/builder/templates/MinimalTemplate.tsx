@@ -2,9 +2,10 @@ import { ResumeData, DEFAULT_SETTINGS } from '@/types/resume';
 
 interface TemplateProps {
   data: ResumeData;
+  fontFamily?: string;
 }
 
-export default function MinimalTemplate({ data }: TemplateProps) {
+export default function MinimalTemplate({ data, fontFamily }: TemplateProps) {
   const themeColor = data.settings?.themeColor || DEFAULT_SETTINGS.themeColor;
   const fontSize = data.settings?.fontSize || DEFAULT_SETTINGS.fontSize;
 
@@ -15,7 +16,7 @@ export default function MinimalTemplate({ data }: TemplateProps) {
   };
 
   return (
-    <div className="p-10 h-full bg-gray-50" style={{ fontSize: `${fontSize}pt` }}>
+    <div className="p-10 h-full bg-gray-50" style={{ fontSize: `${fontSize}pt`, fontFamily: fontFamily || 'IBM Plex Serif' }}>
       {/* Header */}
       <header className="mb-8">
         <h1 

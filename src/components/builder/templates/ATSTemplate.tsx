@@ -2,9 +2,10 @@ import { ResumeData, DEFAULT_SETTINGS } from '@/types/resume';
 
 interface TemplateProps {
   data: ResumeData;
+  fontFamily?: string;
 }
 
-export default function ATSTemplate({ data }: TemplateProps) {
+export default function ATSTemplate({ data, fontFamily }: TemplateProps) {
   const themeColor = data.settings?.themeColor || DEFAULT_SETTINGS.themeColor;
   const fontSize = data.settings?.fontSize || DEFAULT_SETTINGS.fontSize;
 
@@ -15,7 +16,7 @@ export default function ATSTemplate({ data }: TemplateProps) {
   };
 
   return (
-    <div className="p-8 h-full font-sans text-sm bg-white" style={{ fontSize: `${fontSize}pt` }}>
+    <div className="p-8 h-full font-sans text-sm bg-white" style={{ fontSize: `${fontSize}pt`, fontFamily: fontFamily || 'IBM Plex Serif' }}>
       {/* Header - Plain text, no formatting that confuses ATS */}
       <header className="mb-6">
         <h1 

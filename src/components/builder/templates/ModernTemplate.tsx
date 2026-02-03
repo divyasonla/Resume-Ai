@@ -3,9 +3,10 @@ import { Mail, Phone, MapPin, Linkedin, Globe } from 'lucide-react';
 
 interface TemplateProps {
   data: ResumeData;
+  fontFamily?: string;
 }
 
-export default function ModernTemplate({ data }: TemplateProps) {
+export default function ModernTemplate({ data, fontFamily }: TemplateProps) {
   const themeColor = data.settings?.themeColor || DEFAULT_SETTINGS.themeColor;
   const fontSize = data.settings?.fontSize || DEFAULT_SETTINGS.fontSize;
 
@@ -16,7 +17,7 @@ export default function ModernTemplate({ data }: TemplateProps) {
   };
 
   return (
-    <div className="p-8 h-full bg-white" style={{ fontSize: `${fontSize}pt` }}>
+    <div className="p-8 h-full bg-white" style={{ fontSize: `${fontSize}pt`, fontFamily: fontFamily || 'IBM Plex Serif' }}>
       {/* Header */}
       <header 
         className="border-b-2 pb-4 mb-6"

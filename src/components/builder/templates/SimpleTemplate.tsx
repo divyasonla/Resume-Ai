@@ -2,9 +2,10 @@ import { ResumeData } from '@/types/resume';
 
 interface TemplateProps {
   data: ResumeData;
+  fontFamily?: string;
 }
 
-export default function SimpleTemplate({ data }: TemplateProps) {
+export default function SimpleTemplate({ data, fontFamily }: TemplateProps) {
   const themeColor = data.settings?.themeColor || '217 91% 60%';
   const fontSize = data.settings?.fontSize || 11;
 
@@ -17,7 +18,7 @@ export default function SimpleTemplate({ data }: TemplateProps) {
   return (
     <div 
       className="p-8 h-full bg-white"
-      style={{ fontSize: `${fontSize}pt` }}
+      style={{ fontSize: `${fontSize}pt`, fontFamily: fontFamily || 'IBM Plex Serif' }}
     >
       {/* Header */}
       <header className="mb-6">

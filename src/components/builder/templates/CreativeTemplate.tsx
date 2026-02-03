@@ -2,9 +2,10 @@ import { ResumeData, DEFAULT_SETTINGS } from '@/types/resume';
 
 interface TemplateProps {
   data: ResumeData;
+  fontFamily?: string;
 }
 
-export default function CreativeTemplate({ data }: TemplateProps) {
+export default function CreativeTemplate({ data, fontFamily }: TemplateProps) {
   const themeColor = data.settings?.themeColor || DEFAULT_SETTINGS.themeColor;
   const fontSize = data.settings?.fontSize || DEFAULT_SETTINGS.fontSize;
 
@@ -18,7 +19,7 @@ export default function CreativeTemplate({ data }: TemplateProps) {
   const [h, s, l] = themeColor.split(' ').map(v => parseFloat(v));
 
   return (
-    <div className="h-full flex bg-white" style={{ fontSize: `${fontSize}pt` }}>
+    <div className="h-full flex bg-white" style={{ fontSize: `${fontSize}pt`, fontFamily: fontFamily || 'IBM Plex Serif' }}>
       {/* Sidebar */}
       <div 
         className="w-1/3 text-white p-6"
