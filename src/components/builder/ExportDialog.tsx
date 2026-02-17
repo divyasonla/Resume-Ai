@@ -258,7 +258,7 @@ export default function ExportDialog({ open, onOpenChange, resumeData, resumeRef
             </div>
           </Button>
 
-          <Button 
+          {/* <Button 
             variant="outline" 
             className="justify-start h-auto p-4" 
             onClick={handleExportDocx}
@@ -269,9 +269,9 @@ export default function ExportDialog({ open, onOpenChange, resumeData, resumeRef
               <p className="font-medium">Word Document (DOCX)</p>
               <p className="text-sm text-muted-foreground">Coming soon</p>
             </div>
-          </Button>
+          </Button> */}
 
-          <Button 
+          {/* <Button 
             variant="outline" 
             className="justify-start h-auto p-4" 
             onClick={handleExportTxt}
@@ -286,7 +286,7 @@ export default function ExportDialog({ open, onOpenChange, resumeData, resumeRef
               <p className="font-medium">Plain Text</p>
               <p className="text-sm text-muted-foreground">For copy-paste into job portals</p>
             </div>
-          </Button>
+          </Button> */}
         </div>
       </DialogContent>
     </Dialog>
