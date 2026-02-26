@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { ResumeData, INITIAL_RESUME_DATA, WizardStep, ResumeSettings } from '@/types/resume';
+import { callResumeAI } from '@/integrations/supabase/client';
 
 interface ResumeContextType {
   resumeData: ResumeData;
@@ -10,6 +11,9 @@ interface ResumeContextType {
   setCurrentStep: (step: WizardStep) => void;
   resetResume: () => void;
   loadResume: (data: ResumeData) => void;
+  generateObjective: () => void;
+  suggestSkills: () => void;
+  provideFeedback: () => void;
 }
 
 const ResumeContext = createContext<ResumeContextType | undefined>(undefined);
@@ -50,6 +54,40 @@ export function ResumeProvider({ children, initialData }: ResumeProviderProps) {
     setResumeData(data);
   }, []);
 
+  const generateObjective = useCallback(async () => {
+    try {
+      const result = await callResumeAI('generate-objective', {
+        personalInfo: resumeData.personalInfo,
+        education: resumeData.education,
+        skills: resumeData.skills,
+      });
+      updateResumeData({ careerObjective: result.objective });
+    } catch (error) {
+      console.error('Failed to generate objective:', error);
+    }
+  }, [resumeData, updateResumeData]);
+
+  const suggestSkills = useCallback(async () => {
+    try {
+      const result = await callResumeAI('suggest-skills', {
+        education: resumeData.education,
+        projects: resumeData.projects,
+      });
+      updateResumeData({ skills: result.skills });
+    } catch (error) {
+      console.error('Failed to suggest skills:', error);
+    }
+  }, [resumeData, updateResumeData]);
+
+  const provideFeedback = useCallback(async () => {
+    try {
+      const result = await callResumeAI('feedback', resumeData);
+      updateResumeData({ aiFeedback: result.feedback });
+    } catch (error) {
+      console.error('Failed to provide feedback:', error);
+    }
+  }, [resumeData, updateResumeData]);
+
   return (
     <ResumeContext.Provider
       value={{
@@ -61,6 +99,9 @@ export function ResumeProvider({ children, initialData }: ResumeProviderProps) {
         setCurrentStep,
         resetResume,
         loadResume,
+        generateObjective,
+        suggestSkills,
+        provideFeedback,
       }}
     >
       {children}

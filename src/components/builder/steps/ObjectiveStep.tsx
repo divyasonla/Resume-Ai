@@ -8,29 +8,18 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 export default function ObjectiveStep() {
-  const { resumeData, updateResumeData } = useResume();
+  const { resumeData, generateObjective } = useResume();
   const [generating, setGenerating] = useState(false);
   const { toast } = useToast();
 
   const handleGenerate = async () => {
     setGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke('resume-ai', {
-        body: {
-          type: 'generate-objective',
-          resumeData: resumeData,
-        },
+      await generateObjective();
+      toast({
+        title: 'Objective generated',
+        description: 'AI has created a career objective based on your profile.',
       });
-
-      if (error) throw error;
-
-      if (data?.objective) {
-        updateResumeData({ careerObjective: data.objective });
-        toast({
-          title: 'Objective generated',
-          description: 'AI has created a career objective based on your profile.',
-        });
-      }
     } catch (error: any) {
       toast({
         title: 'Error generating objective',

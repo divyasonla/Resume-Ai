@@ -3,15 +3,31 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Import the supabase client like this:
-// import { supabase } from "@/integrations/supabase/client";
-
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     storage: localStorage,
     persistSession: true,
     autoRefreshToken: true,
-  }
+  },
 });
+
+/**
+ * Calls the `resume-ai` Supabase function.
+ * @param {"generate-objective" | "suggest-skills" | "feedback"} type - The type of operation to perform.
+ * @param {object} resumeData - The resume data to process.
+ * @returns {Promise<object>} - The result from the `resume-ai` function.
+ */
+export async function callResumeAI(type: "generate-objective" | "suggest-skills" | "feedback", resumeData: object) {
+  const { data, error } = await supabase.functions.invoke("resume-ai", {
+    body: { type, resumeData },
+  });
+
+  if (error) {
+    console.error("Error calling resume-ai function:", error);
+    throw error;
+  }
+
+  return data;
+}

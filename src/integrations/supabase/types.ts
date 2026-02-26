@@ -242,3 +242,30 @@ export const Constants = {
     Enums: {},
   },
 } as const
+
+Functions: {
+      "resume-ai": {
+        Args: {
+          type: "generate-objective" | "suggest-skills" | "feedback";
+          resumeData: {
+            personalInfo?: Json;
+            education?: Json;
+            skills?: Json;
+            projects?: Json;
+          };
+        };
+        Returns: {
+          objective?: string;
+          skills?: string[];
+          feedback?: {
+            overallScore: number;
+            grammarScore: number;
+            professionalScore: number;
+            completenessScore: number;
+            strengths: string[];
+            suggestions: string[];
+            weaknesses: string[];
+          };
+        };
+      };
+    };

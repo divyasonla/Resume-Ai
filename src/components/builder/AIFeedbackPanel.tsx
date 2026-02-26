@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useResume } from '@/contexts/ResumeContext';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
   Sheet,
@@ -19,23 +18,15 @@ interface AIFeedbackPanelProps {
 }
 
 export default function AIFeedbackPanel({ open, onOpenChange }: AIFeedbackPanelProps) {
-  const { resumeData, updateResumeData } = useResume();
+  const { resumeData, provideFeedback } = useResume();
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   const generateFeedback = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('resume-ai', {
-        body: { type: 'feedback', resumeData },
-      });
-
-      if (error) throw error;
-
-      if (data?.feedback) {
-        updateResumeData({ aiFeedback: { ...data.feedback, generatedAt: new Date().toISOString() } });
-        toast({ title: 'Feedback generated', description: 'AI has analyzed your resume.' });
-      }
+      await provideFeedback();
+      toast({ title: 'Feedback generated', description: 'AI has analyzed your resume.' });
     } catch (error: any) {
       toast({ title: 'Error', description: error.message || 'Failed to generate feedback', variant: 'destructive' });
     } finally {

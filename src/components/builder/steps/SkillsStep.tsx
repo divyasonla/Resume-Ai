@@ -20,7 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 
 
 export default function SkillsStep() {
-  const { resumeData, updateResumeData } = useResume();
+  const { resumeData, updateResumeData, suggestSkills } = useResume();
   const [newSkill, setNewSkill] = useState('');
   // Removed level state
   const [newCategory, setNewCategory] = useState<Skill['category']>('technical');
@@ -50,27 +50,11 @@ export default function SkillsStep() {
   const handleSuggestSkills = async () => {
     setSuggesting(true);
     try {
-      const { data, error } = await supabase.functions.invoke('resume-ai', {
-        body: {
-          type: 'suggest-skills',
-          resumeData: resumeData,
-        },
+      await suggestSkills();
+      toast({
+        title: 'Skills suggested',
+        description: 'AI has added suggested skills based on your profile.',
       });
-
-      if (error) throw error;
-
-      if (data?.skills && Array.isArray(data.skills)) {
-        const newSkills: Skill[] = data.skills.map((name: string) => ({
-          id: crypto.randomUUID(),
-          name,
-          category: 'technical' as const,
-        }));
-        updateResumeData({ skills: [...resumeData.skills, ...newSkills] });
-        toast({
-          title: 'Skills suggested',
-          description: `Added ${newSkills.length} suggested skills based on your profile.`,
-        });
-      }
     } catch (error: any) {
       toast({
         title: 'Error suggesting skills',
