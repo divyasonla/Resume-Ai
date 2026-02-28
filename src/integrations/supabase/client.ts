@@ -15,3 +15,28 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     autoRefreshToken: true,
   }
 });
+
+/**
+ * Calls the `resume-ai` Supabase function.
+ * @param {"generate-objective" | "suggest-skills" | "feedback"} type - The type of operation to perform.
+ * @param {object} resumeData - The resume data to process.
+ * @param {string} [accessToken] - Optional access token for Authorization header.
+ * @returns {Promise<object>} - The result from the `resume-ai` function.
+ */
+export async function callResumeAI(type: "generate-objective" | "suggest-skills" | "feedback", resumeData: object, accessToken?: string) {
+  const headers: Record<string, string> = {};
+  if (accessToken) {
+    headers["Authorization"] = `Bearer ${accessToken}`;
+  }
+  const { data, error } = await supabase.functions.invoke("resume-ai", {
+    body: JSON.stringify({ type, resumeData }),
+    headers,
+  });
+
+  if (error) {
+    console.error("Error calling resume-ai function:", error);
+    throw error;
+  }
+
+  return data;
+}
