@@ -21,7 +21,8 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { WIZARD_STEPS } from '@/types/resume';
 import { ArrowLeft, Save, Loader2, Menu, Settings } from 'lucide-react';
 
 import WizardSidebar from '@/components/builder/WizardSidebar';
@@ -40,7 +41,7 @@ function BuilderContent() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { resumeData, loadResume, updateResumeData } = useResume();
+  const { resumeData, loadResume, updateResumeData, currentStep } = useResume();
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const resumeRef = useRef<HTMLDivElement>(null);
@@ -266,6 +267,11 @@ function BuilderContent() {
 
       <Dialog open={openSectionDialog} onOpenChange={setOpenSectionDialog}>
         <DialogContent>
+          {/* Accessibility: Add DialogTitle and DialogDescription */}
+          <DialogTitle>{WIZARD_STEPS.find(s => s.key === currentStep)?.label || 'Section'}</DialogTitle>
+          <DialogDescription>
+            {`Fill out the ${WIZARD_STEPS.find(s => s.key === currentStep)?.label?.toLowerCase() || 'section'} details.`}
+          </DialogDescription>
           <WizardContent />
         </DialogContent>
       </Dialog>

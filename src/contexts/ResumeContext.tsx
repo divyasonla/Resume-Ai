@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { ResumeData, INITIAL_RESUME_DATA, WizardStep, ResumeSettings } from '@/types/resume';
 import { callResumeAI } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface ResumeContextType {
   resumeData: ResumeData;
@@ -26,6 +27,7 @@ interface ResumeProviderProps {
 export function ResumeProvider({ children, initialData }: ResumeProviderProps) {
   const [resumeData, setResumeData] = useState<ResumeData>(initialData || INITIAL_RESUME_DATA);
   const [currentStep, setCurrentStep] = useState<WizardStep>('personal');
+  const { session } = useAuth();
 
   const updateResumeData = useCallback((updates: Partial<ResumeData>) => {
     setResumeData(prev => ({ ...prev, ...updates }));
@@ -56,37 +58,45 @@ export function ResumeProvider({ children, initialData }: ResumeProviderProps) {
 
   const generateObjective = useCallback(async () => {
     try {
-      const result = await callResumeAI('generate-objective', {
-        personalInfo: resumeData.personalInfo,
-        education: resumeData.education,
-        skills: resumeData.skills,
-      });
+      const result = await callResumeAI(
+        'generate-objective',
+        {
+          personalInfo: resumeData.personalInfo,
+          education: resumeData.education,
+          skills: resumeData.skills,
+        },
+        session?.access_token
+      );
       updateResumeData({ careerObjective: result.objective });
     } catch (error) {
       console.error('Failed to generate objective:', error);
     }
-  }, [resumeData, updateResumeData]);
+  }, [resumeData, updateResumeData, session]);
 
   const suggestSkills = useCallback(async () => {
     try {
-      const result = await callResumeAI('suggest-skills', {
-        education: resumeData.education,
-        projects: resumeData.projects,
-      });
+      const result = await callResumeAI(
+        'suggest-skills',
+        {
+          education: resumeData.education,
+          projects: resumeData.projects,
+        },
+        session?.access_token
+      );
       updateResumeData({ skills: result.skills });
     } catch (error) {
       console.error('Failed to suggest skills:', error);
     }
-  }, [resumeData, updateResumeData]);
+  }, [resumeData, updateResumeData, session]);
 
   const provideFeedback = useCallback(async () => {
     try {
-      const result = await callResumeAI('feedback', resumeData);
+      const result = await callResumeAI('feedback', resumeData, session?.access_token);
       updateResumeData({ aiFeedback: result.feedback });
     } catch (error) {
       console.error('Failed to provide feedback:', error);
     }
-  }, [resumeData, updateResumeData]);
+  }, [resumeData, updateResumeData, session]);
 
   return (
     <ResumeContext.Provider
